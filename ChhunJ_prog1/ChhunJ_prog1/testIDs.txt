@@ -1,0 +1,12 @@
+<DOCID> msg25 </DOCID>
+<DOCID> msg5 </DOCID>
+<DOCID> msg4 </DOCID>
+<DOCID> msg3 </DOCID>
+<DOCID> msg21 </DOCID>
+<DOC> HELLO WORLD </DOC>
+
+free willy
+hello
+world
+this is not a test
+HELLO msg5 </DOC>
