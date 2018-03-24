@@ -10,3 +10,5 @@ hello
 world
 this is not a test
 HELLO msg5 </DOC>
+
+this is not a test <DOCID> msg21 </DOCID> this is not a test
