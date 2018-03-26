@@ -129,7 +129,7 @@ enum State winner(char c);
 enum State winners(char c); 
 //Main function prototypes
 void printStateTransition(enum State currentState, char c);
-void printLeftGrammar(vector<string> LeftGrammar);
+void printLeftGrammar(enum State prevState, enum State nextState, char c);
 //vector<string> LeftGrammar;
 //Finite Automata prototype
 void FiniteAutomata(char c); //accept a intacter
@@ -157,7 +157,7 @@ int _tmain(int argc, _TCHAR * argv[]) {
 	vector<int> vectSpamIDs; //vector will contain the the IDs of the emails that are identified as SPAM
 	vector<State> vector_statesReached; //vector to contain all transition functions / states reached, print at end of each body parse
 
-	string fileName = "messagefile.txt";
+	string fileName = "test_grammars.txt";
 	string lineFromFile ="", temp = "", tempString = ""; //tempString will build a string of body lines
 
 	int character; //to hold characters
@@ -315,18 +315,20 @@ void FiniteAutomata(char  c)
 	}
 
 }
-void printLeftGrammar()
+void printLeftGrammar(enum State prevState, enum State newState, char c)
 {
 	
+	cout <<"q"<<newState<< " ->  q" << prevState<<c<<endl; //print Frammar 
 
 }
 //STATE BASED FUNCTIONS
 enum State start(char c) {
 
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c == 'f') {
 
+			printLeftGrammar(dfaState,state_f ,c);
 		dfaState = state_f;cout <<"q"<<state_f << ", ";
 
 	}
@@ -337,10 +339,11 @@ enum State start(char c) {
 }
 enum State f(char c) {
 
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c == 'r') {
 
+		printLeftGrammar(dfaState,state_fr ,c);
 		dfaState = state_fr;cout <<"q"<<state_fr << ", ";
 
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
@@ -348,19 +351,21 @@ enum State f(char c) {
 }
 enum State fr(char c) {
 
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c == 'e') {
-
+printLeftGrammar(dfaState,state_fre,c)
+;
 		dfaState = state_fre;cout <<"q"<<state_fre << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 }
 enum State fre(char c) {
 
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c == 'e') {
+printLeftGrammar(dfaState,state_free,c);
 
 		dfaState = state_free;cout <<"q"<<state_free << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
@@ -368,57 +373,71 @@ enum State fre(char c) {
 }
 enum State free(char c) {
 
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c == ' ') {
+printLeftGrammar(dfaState,state_free_,c);
 		dfaState = state_free_;cout <<"q"<<state_free_ << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 }
 enum State free_(char c) {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
-	if (c =='a') {dfaState = state_free_a;cout <<"q"<<state_free_a << ", ";} 
-	else if(c =='s'){dfaState =state_free_s;cout <<"q"<<state_free_s << ", ";} //move onto software test 
-	else if(c =='v'){dfaState =state_free_v;cout <<"q"<<state_free_v << ", ";} // move onto vacation test
+	if (c =='a') {
+		printLeftGrammar(dfaState,state_free_a,c);
+		dfaState = state_free_a;cout <<"q"<<state_free_a << ", ";}
+	else if(c =='s'){
+			printLeftGrammar(dfaState,state_free_s,c);
+		dfaState =state_free_s;cout <<"q"<<state_free_s << ", ";} //move onto software test 
+	else if(c =='v'){
+			printLeftGrammar(dfaState,state_free_v,c);
+		dfaState =state_free_v;cout <<"q"<<state_free_v << ", ";} // move onto vacation test
 	else if(c =='t'){dfaState =state_free_t;cout <<"q"<<state_free_t << ", ";} //move onto trials test
-	else {dfaState = state_start;cout <<"q"<<state_start << ", ";} //fail
+	else {
+			printLeftGrammar(dfaState,state_free_t,c);
+		dfaState = state_start;cout <<"q"<<state_start << ", ";} //fail
 	return dfaState;
 }
 //state prototypes handling free_access
 enum State free_a(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='c') {
+		printLeftGrammar(dfaState,state_free_ac,c);
 		dfaState = state_free_ac;cout <<"q"<<state_free_ac << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 }
 enum State free_ac(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='c') {
+		printLeftGrammar(dfaState,state_free_acc,c);
 		dfaState = state_free_acc;cout <<"q"<<state_free_acc << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 }
 enum State free_acc(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='e') {
+		printLeftGrammar(dfaState,state_free_acce,c);
 		dfaState = state_free_acce;cout <<"q"<<state_free_acce << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 }
 enum State free_acce(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='s') {
+
 		//FINAL STATE //DONE
+				printLeftGrammar(dfaState,state_final,c);
 		//cout<<endl<<"String 'free access' accepted"  << ", ";
 		dfaState = state_final;cout <<"q"<<state_final << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
@@ -428,64 +447,71 @@ enum State free_acce(char c)
 //state prototypes handling ree_software
 enum State free_s(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='o') {
+		printLeftGrammar(dfaState,state_free_so,c);
 		dfaState = state_free_so;cout <<"q"<<state_free_so << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 } 
 enum State free_so(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='f') {
-		dfaState = state_free_sof;cout <<"q"<<state_free_sof << ", ";
+printLeftGrammar(dfaState,state_free_sof,c)
+;		dfaState = state_free_sof;cout <<"q"<<state_free_sof << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 } 
 enum State free_sof(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='t') {
-		dfaState = state_free_soft;cout <<"q"<<state_free_soft << ", ";
+printLeftGrammar(dfaState,state_free_soft,c)
+;		dfaState = state_free_soft;cout <<"q"<<state_free_soft << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 } 
 enum State free_soft(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='w') {
-		dfaState = state_free_softw;cout <<"q"<<state_free_softw << ", ";
+printLeftGrammar(dfaState,state_free_softw,c)
+;		dfaState = state_free_softw;cout <<"q"<<state_free_softw << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 } 
 enum State free_softw(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='a') {
-		dfaState = state_free_softwa;cout <<"q"<<state_free_softwa << ", ";
+printLeftGrammar(dfaState,state_free_softwa,c)
+;		dfaState = state_free_softwa;cout <<"q"<<state_free_softwa << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 }
 enum State free_softwa(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='r') {
-		dfaState = state_free_softwar;cout <<"q"<<state_free_softwar << ", ";
+printLeftGrammar(dfaState,state_free_softwar,c)
+;		dfaState = state_free_softwar;cout <<"q"<<state_free_softwar << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 } 
 enum State free_softwar(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='e') {
-		//	cout<<endl<<"String 'free software' accepted"  << ", ";
+printLeftGrammar(dfaState,state_final,c)
+;		//	cout<<endl<<"String 'free software' accepted"  << ", ";
 		dfaState = state_final; cout <<"q"<<state_final << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
@@ -494,64 +520,71 @@ enum State free_softwar(char c)
 //state prototypes handling free_vacation
 enum State free_v(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='a') {
-		dfaState = state_free_va;cout <<"q"<<state_free_va << ", ";
+printLeftGrammar(dfaState,state_free_va,c)
+;		dfaState = state_free_va;cout <<"q"<<state_free_va << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 } 
 enum State free_va(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='c') {
-		dfaState = state_free_vac;cout <<"q"<<state_free_vac << ", ";
+printLeftGrammar(dfaState,state_free_vac,c)
+;		dfaState = state_free_vac;cout <<"q"<<state_free_vac << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 }
 enum State free_vac(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='a') {
-		dfaState = state_free_vaca;cout <<"q"<<state_free_vaca << ", ";
+printLeftGrammar(dfaState,state_free_vaca,c)
+;		dfaState = state_free_vaca;cout <<"q"<<state_free_vaca << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 } 
 enum State free_vaca(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='t') {
-		dfaState = state_free_vacat;cout <<"q"<<state_free_vacat << ", ";
+printLeftGrammar(dfaState,state_free_vacat,c)
+;		dfaState = state_free_vacat;cout <<"q"<<state_free_vacat << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 } 
 enum State free_vacat(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='i') {
-		dfaState = state_free_vacati;cout <<"q"<<state_free_vacati << ", ";
+printLeftGrammar(dfaState,state_free_vacati,c)
+;		dfaState = state_free_vacati;cout <<"q"<<state_free_vacati << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 } 
 enum State free_vacati(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='o') {
-		dfaState = state_free_vacatio;cout <<"q"<<state_free_vacatio << ", ";
+printLeftGrammar(dfaState,state_free_vacatio,c)
+;		dfaState = state_free_vacatio;cout <<"q"<<state_free_vacatio << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 } 
 enum State free_vacatio(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='n') {
-		//cout<<endl<<"String 'free vacation' accepted"  << ", ";
+printLeftGrammar(dfaState,state_final,c)
+;		//cout<<endl<<"String 'free vacation' accepted"  << ", ";
 		dfaState = state_final; cout <<"q"<<state_final << ", ";
 		//	dfaState = state_free_vacation;cout <<"q"<<state_free_vacation << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
@@ -561,46 +594,51 @@ enum State free_vacatio(char c)
 //state prortypes free_trials
 enum State free_t(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='r') {
-		dfaState = state_free_tr;cout <<"q"<<state_free_tr << ", ";
+printLeftGrammar(dfaState,state_free_trial,c)
+;		dfaState = state_free_tr;cout <<"q"<<state_free_tr << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 } 
 enum State free_tr(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='i') {
-		dfaState = state_free_tri;cout <<"q"<<state_free_tri << ", ";
+printLeftGrammar(dfaState,state_free_tri,c)
+;		dfaState = state_free_tri;cout <<"q"<<state_free_tri << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 } 
 enum State free_tri(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='a') {
-		dfaState = state_free_tria;cout <<"q"<<state_free_tria << ", ";
+printLeftGrammar(dfaState,state_free_tria,c)
+;		dfaState = state_free_tria;cout <<"q"<<state_free_tria << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 } 
 enum State free_tria(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='l') {
-		dfaState = state_free_trial;cout <<"q"<<state_free_trial << ", ";
+printLeftGrammar(dfaState,state_free_trial,c)
+;		dfaState = state_free_trial;cout <<"q"<<state_free_trial << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 } 
 enum State free_trial(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='s') {
-		//cout<<endl<<"String 'free trals' accepted"  << ", ";
+printLeftGrammar(dfaState,state_final,c)
+;		//cout<<endl<<"String 'free trals' accepted"  << ", ";
 		dfaState = state_final; cout <<"q"<<state_final << ", ";
 		//dfaState = state_free_trials;cout <<"q"<<state_free_trials << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
@@ -612,29 +650,32 @@ enum State free_trial(char c)
 */
 enum State w(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='i') {
-		dfaState = state_wi;cout <<"q"<<state_wi << ", ";
+printLeftGrammar(dfaState,state_wi,c)
+;		dfaState = state_wi;cout <<"q"<<state_wi << ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 }
 enum State wi(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='n') {
-		dfaState = state_final_win;cout <<"q"<< state_final_win<< ", ";
+printLeftGrammar(dfaState,state_final_win,c)
+;		dfaState = state_final_win;cout <<"q"<< state_final_win<< ", ";
 	} else {dfaState = state_start;cout <<"q"<<state_start << ", ";}
 	return dfaState;
 }
 enum State win(char c)
 {
 
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='n'){
-		//cout<<endl<<"String 'free win' accepted"  << ", ";
+printLeftGrammar(dfaState,state_winn,c)
+;		//cout<<endl<<"String 'free win' accepted"  << ", ";
 		dfaState = state_winn;cout <<"q"<<state_winn << ", ";	
 	}
 	else{dfaState = state_start;cout <<"q"<<state_start << ", ";}
@@ -647,21 +688,28 @@ enum State win(char c)
 */
 enum State winn(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='i') {
-		dfaState = state_winni;cout <<"q"<<state_winni << ", ";
+		
+printLeftGrammar(dfaState,state_winni,c)
+;		dfaState = state_winni;cout <<"q"<<state_winni << ", ";
 	}
-	else if(c =='e'){dfaState = state_winne;cout <<"q"<<state_winne << ", ";}
+	else if(c =='e'){
+		
+printLeftGrammar(dfaState,state_winne,c)
+;		dfaState = state_winne;cout <<"q"<<state_winne << ", ";}
 	else {dfaState = state_start;}
 	return dfaState;
 } 
 enum State winni(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='n') {
-		dfaState = state_winnin;
+		
+printLeftGrammar(dfaState,state_winnin,c)
+;		dfaState = state_winnin;
 		cout <<"q"<<state_winnin << ", ";
 	} else {dfaState = state_start;
 	cout <<"q"<<state_start << ", ";}
@@ -669,10 +717,12 @@ enum State winni(char c)
 } 
 enum State winnin(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='g') {
-		dfaState = state_winning;
+		
+printLeftGrammar(dfaState,state_winning,c)
+;		dfaState = state_winning;
 		cout <<"q"<<state_winning << ", ";
 	} else {dfaState = state_start;
 	cout <<"q"<<state_start << ", ";}
@@ -680,10 +730,12 @@ enum State winnin(char c)
 } 
 enum State winning(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='s') {
-		//cout<<endl<<"String 'winnings' accepted"  << ", ";
+		
+printLeftGrammar(dfaState,state_final,c)
+;		//cout<<endl<<"String 'winnings' accepted"  << ", ";
 		dfaState = state_final; cout <<"q"<<state_final << ", ";
 
 	} 
@@ -697,10 +749,12 @@ enum State winning(char c)
 */
 enum State winne(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
 	if (c =='r') {
-		dfaState = state_winner;
+		
+printLeftGrammar(dfaState,state_winner,c)
+;		dfaState = state_winner;
 		cout <<"q"<<state_winner << ", ";
 	} else {dfaState = state_start;
 	cout <<"q"<<state_start << ", ";}
@@ -708,14 +762,19 @@ enum State winne(char c)
 }
 enum State winner(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 	//100% this is accepted
 
 	if (c =='s' || c == '\n' || c == '\0' || c == ' ' || c == NULL ) {
-		//cout <<endl<<"q"<<"String 'winners' accepted"  << ", ";
+
+printLeftGrammar(dfaState,state_final,c)
+;		//cout <<endl<<"q"<<"String 'winners' accepted"  << ", ";
 		dfaState = state_final;}
 	else if (!(c =='s' || c == NULL)){dfaState = state_start;}
-	else{dfaState = state_final;}
+	else{
+		
+printLeftGrammar(dfaState,state_final,c)
+;		dfaState = state_final;}
 	cout <<"q"<<state_final << ", ";
 
 
@@ -727,20 +786,27 @@ enum State winner(char c)
 enum State final(char c)
 {
 	printStateTransition(dfaState, c);
-	cout <<"qF" <<",  " ;
+	
+printLeftGrammar(dfaState,state_final,c)
+;	cout <<"qF" <<",  " ;
 	dfaState = state_final;
 	return dfaState;
 }
 enum State final_win(char c)
 {
-	printStateTransition(dfaState,c);
+	//printStateTransition(dfaState,c);
 
-	if(c == 'n'){dfaState = state_winn;
+	if(c == 'n'){
+			
+printLeftGrammar(dfaState,state_winn,c)
+;		dfaState = state_winn;
 	cout <<"q"<<state_winn << ", ";
 	}
 	else if(c ='\0' || c == ' ')
 	{
-		dfaState = state_final;// immutable now
+			
+printLeftGrammar(dfaState,state_final,c)
+;		dfaState = state_final;// immutable now
 		cout <<"qF_W"<<",  ";
 	}
 	else
