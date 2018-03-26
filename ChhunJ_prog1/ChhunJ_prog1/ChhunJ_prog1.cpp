@@ -28,7 +28,7 @@ is a ID identifying a SPAM email
 Program charroduction up here
 
 */
-
+#include "stdafx.h"
 #include <iostream> 
 #include <fstream> 
 #include <string> 
@@ -324,7 +324,7 @@ int main() {
 	printVectIDs(vectSpamIDs);
 
 	//END
-	//system("pause"); //pause screen to show output
+	system("pause"); //pause screen to show output
 	return 0;
 }
 void printStateTransition(enum State currentState, char c)

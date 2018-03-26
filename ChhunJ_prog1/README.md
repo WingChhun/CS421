@@ -19,31 +19,30 @@
   is a ID identifying a SPAM email
 
 ## NOTES
-  - If want to change the file to be parsed, within the main, change filename to "anyFileName within same directory"
+  - If want to change the file to be parsed, within the main, change file.open("messagefile.txt") ' 
+        - Either change the contents of messagefile.txt 
+        - OR change the filename to be opened to something else 
 
-  ## DEPENDENCIES
-  - NOTES, there is a 'Helpers.h' header file, this class is not required however it increases the modularity of the program as
-		- this main .cpp file is long and requires the enum States and State functions to be within it.
-  - Other preprocessors
-    - iostream, stack, vector, string, fstream
 
  ## Information on how to compile and run program on campus computer 
   
-  - To run this program, 4 files are required to be in the same directory, these files include,
+  - To run this program, 2 files are required
     - ChhunJ_prog1.cpp  ( this is the head of the source code for the program)
-    - Header.h
-    - Header.cpp
-    - messagefile.txt  ( This can be any messageFile but the name within ChhunJ_prog1.cpp must be changed accordingly for other files)
-        - Will include patterns of email messages denoted from prompt
+    - messagefile.txt ("File containing email patterns");
+
 ## How to run
     - Using Putty, compile all files by navigating to the directory containing all of the required files
         - Run the command
-            - 'g++ Header.h Header.cpp ChhunJ_prog1.cpp'
+            - 'g++ ChhunJ_prog1.cpp' or 'g++ *'
         - After program has compiled
             -  Run the command
             - './a.out'
+
     - Output will be displayed on the screen / PUTTY window.
-    
+         - Using the provided messagefile.txt, the output within PUTTY will product segmentation fault
+                - To get a stable output on PUTTY, I have added a folder full of patterns that I used for unit testing
+         - If using an IDE, segmentation fault will not appear
+
 ## Expected papers to be included on submission date (3/26/2018)
 - Hard copies of
     -Reg expression,
@@ -52,6 +51,6 @@
     -Hard copies of source code
     # Sample Run Output
     - Output from main messagefile.txt
-    - Output from two other sample runs
+    - Output from three other sample runs
 
   -README.md will be included
