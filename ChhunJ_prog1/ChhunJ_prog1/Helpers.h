@@ -1,4 +1,15 @@
-#pragma once
+/*
+- Helpers.h 
+- ChhunJ_prog1.cpp
+-Programmed by James D. Chhun
+-Spring 2018, 3/22/2018 -> 3/25/2018 (completion date)
+-Class CS421 - Theory of Computing by Rocio 
+
+- This file as well as the Header.cpp file are both required for this program
+
+*/
+
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -11,7 +22,7 @@ public:
 
 	//PRINT FUNCTIONS
 	void printState(enum State currentState); //function for testing/debug, will print currentState
-	void printVectIDs(vector<int> vectSpamIDs); // function will print the IDs of the emails identified as being SPAM
+	void printVectIDs(vector<string> vectSpamIDs); // function will print the IDs of the emails identified as being SPAM
 	void printFinalStates(); //function to print the Final states as numbers to the user
 
 	//Truthy/Falsy functions, to determine what line is being read in the email

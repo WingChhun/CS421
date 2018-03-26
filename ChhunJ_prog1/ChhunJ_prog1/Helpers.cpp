@@ -1,3 +1,15 @@
+/*
+- Helpers.h 
+- ChhunJ_prog1.cpp
+-Programmed by James D. Chhun
+-Spring 2018, 3/22/2018 -> 3/25/2018 (completion date)
+-Class CS421 - Theory of Computing by Rocio 
+
+- This file as well as the Header.h file are i
+
+*/
+
+
 #include "stdafx.h"
 #include "Helpers.h"
 
@@ -18,7 +30,7 @@ void Helpers::printState(enum State currentState)
 {
 	cout <<"Showing State : " << currentState << endl;
 }
-void Helpers::printVectIDs(vector<int> vect_spamIDs)
+void Helpers::printVectIDs(vector<string> vect_spamIDs)
 {
 	cout<<endl<<endl<<"Printing IDs of Emails identified as SPAM"<<endl;
 	for(int i = 0; i < vect_spamIDs.size(); i++)

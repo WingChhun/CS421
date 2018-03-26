@@ -1,45 +1,42 @@
 
 /*
- - ChhunJ_prog1.cpp
- -Programmed by James D. Chhun
- -Spring 2018, 3/22/2018 -> 3/25/2018 (completion date)
- -Class CS421 - Theory of Computing by Rocio 
+- ChhunJ_prog1.cpp
+-Programmed by James D. Chhun
+-Spring 2018, 3/22/2018 -> 3/25/2018 (completion date)
+-Class CS421 - Theory of Computing by Rocio 
 
- - This program parses through a file of email messages, these email  messages are wrapped and formatted in XML tags.
-  Within the program, the email messages are parsed for their message ID as well as body message, individual characters of the body message
-  are then passed into the FiniteAutomaton function, where a Deterministic Finite Automaton is simulated. This DFA has 44 states, 
-  state 44 is the Final state, once this state is reached the email message has been identified as a SPAM message. Because this is a spam message
-  for every character that follows after reaching the final state, the state transition stays trapped within the final state because it is has been accepted.
-  - If the final state has been reached, a vector containing the message IDs parsed from the messages earlier will either keep the ID or pop the ID
-  from it's contents, at the end of the program the contents of the vector are displayed, where each element in the vector
-  is a ID identifying a SPAM email
+- NOTE
+- There are two other files that this program depens on, 'Helpers.h' and "Helpers.cpp', both will be included 
+with online submission as well as hard copy source code
 
-  - If want to change the file to be parsed, within the main, change filename to "<anyFileName within same directory"
-  - NOTES, there is a 'Helpers.h' header file, this class is not required however it increases the modularity of the program as
-		- this main .cpp file is long and requires the enum States and State functions to be within it.
-  -README.md will be included
+- DESCRIPTION
+- This program parses through a file of email messages, these email  messages are wrapped and formatted in XML tags.
+Within the program, the email messages are parsed for their message ID as well as body message, individual characters of the body message
+are then passed into the FiniteAutomaton function, where a Deterministic Finite Automaton is simulated. This DFA has 44 states, 
+state 44 is the Final state, once this state is reached the email message has been identified as a SPAM message. Because this is a spam message
+for every character that follows after reaching the final state, the state transition stays trapped within the final state because it is has been accepted.
+- If the final state has been reached, a vector containing the message IDs parsed from the messages earlier will either keep the ID or pop the ID
+from it's contents, at the end of the program the contents of the vector are displayed, where each element in the vector
+is a ID identifying a SPAM email
+
+- If want to change the file to be parsed, within the main, change filename to "<anyFileName within same directory"
+- NOTES, there is a 'Helpers.h' header file, this class is not required however it increases the modularity of the program as
+- this main .cpp file is long and requires the enum States and State functions to be within it.
+-README.md will be included
 *
 /*
 Program charroduction up here
 
 */
-//Header config
-#include "stdafx.h"
-#include < iostream > 
-#include < fstream > 
-#include < string > 
-#include < stack >
-#include < vector >
 
-using namespace std; // allow ignore std:: prefix for output stream
+#include <iostream> 
+#include <fstream> 
+#include <string> 
+#include <stack>
+#include <vector>
 
-// include helper class with functions that dont involve handling state
-#include "Helpers.h";
+using namespace std; 
 
-/*
-Enum state config
-- enum(States) will represent that current state the FA is in and wwill be used for transition fuinction outputs
-*/
 enum State {
 	state_start,
 	state_f, state_fr, state_fre, state_free, state_free_, 
@@ -128,9 +125,109 @@ enum State winners(char c);
 void printStateTransition(enum State currentState, char c);
 //Finite Automata prototype
 void FiniteAutomata(char c); //accept a intacter
+//PRINT FUNCTIONS
+void printState(enum State currentState); //function for testing/debug, will print currentState
+void printVectIDs(vector<string> vectSpamIDs); // function will print the IDs of the emails identified as being SPAM
+void printFinalStates(); //function to print the Final states as numbers to the user
+
+//Truthy/Falsy functions, to determine what line is being read in the email
+
+bool contains_MSG_ID(string lineFromFile); // check if <DOCID> and 'msg' is present in the string, 
+bool contains_isStartOfEmail(string lineFromFile); //search for <DOC>
+bool contains_isNotSubject(string lineFromFile); //Check if 'Subject' is present, if so, return false to skip
+bool contains_isEndOfEmail(string lineFromFile); //check if </DOC>, end of the email
+bool contains_quotes(string lineFromFile); //check if string contains quotes, return false if doesnt, return true if does
+//get MSGID Functions
+string get_MSG_ID(string lineFromFile);
+string get_cleanString(string lineFromFile); //returns a string without double quotes
+//parse BODY functions
+
 //Global State variable, will represent and hold the current/final state the input reaches
 
 enum State dfaState = state_start; 
+
+
+
+//PRINT FUNCTIONS
+void printState(enum State currentState)
+{
+	cout <<"Showing State : " << currentState << endl;
+}
+void printVectIDs(vector<string> vect_spamIDs)
+{
+	cout<<endl<<endl<<"Printing IDs of Emails identified as SPAM"<<endl;
+	for(int i = 0; i < vect_spamIDs.size(); i++)
+	{
+		cout<<"spamID = " <<vect_spamIDs[i] <<endl;
+	}
+}
+void printFinalStates()
+{
+	cout<<"Called printFinalStates from Helper Class" <<endl;
+}
+//FILE PARSING FUNCTIONS
+bool contains_MSG_ID(string lineFromFile)
+{
+	string srch_MSGID = "msg",srch_DOCID = "</DOCID>"; 
+	int temp = -1,temp2=-1;
+	temp = lineFromFile.find("msg"); //search for starting index of 'msg'
+	temp2 = lineFromFile.find("</DOCID>"); //search for DOCID string
+	if((temp != -1) && (temp2 != -1)){return true;}
+	return false;
+}
+
+bool contains_isNotSubject(string lineFromFile)
+{
+	//Function will check if this line is the Subject:
+	int temp = -1; 
+	temp = lineFromFile.find("Subject:"); //search for 'Subject'
+	if(temp != -1){return true;} //false, there is no subject stirng
+	return false; 
+}
+bool contains_isEndOfEmail(string lineFromFile)
+{
+	//Function will check if this line is the end of the Email
+	int temp = -1; 
+	temp = lineFromFile.find("</DOC>"); 
+	if(temp != -1){return true;} 
+	return false; 
+}
+bool contains_isStartOfEmail(string lineFromFile)
+{
+	//Function checks if starting line
+	int temp = -1;
+	temp = lineFromFile.find("<DOC>");
+	if(temp!= -1 ){return true;}
+	return false;
+}
+bool contains_quotes(string lineFromFile)
+{
+	int temp = -1; 
+	temp = lineFromFile.find('"');
+	if(temp == -1 ) {return false;}
+	return true;
+}
+//GET FUNCTIONS
+string get_MSG_ID(string lineFromFile)
+{
+	//return a string containing the msgID 
+	string temp = ""; 
+	int messageID = -1, docID = -1;
+	messageID = lineFromFile.find("msg"); //search for starting index of 'msg'
+	docID = lineFromFile.find("</DOCID>"); //search for DOCID string
+	temp = lineFromFile.substr(messageID+3, docID-1);
+	return temp; //temp is the messageID as a string
+}
+string get_cleanString(string strCleanse)
+{
+	int position = -1;
+	do
+	{
+		position = strCleanse.find('"');
+		strCleanse.erase(position,1); //erase single character
+	}while(strCleanse.find('"') != -1);
+	return strCleanse ;
+}
 
 
 /* MAIN - Logic, Search for XML tags, perform appropriate action depending on which is read
@@ -145,11 +242,11 @@ enum State dfaState = state_start;
 - If so, then build a substring that contains the ID,
 -Convert that substring into an integer and push into vector of SpamIDs
 */
-int _tmain(int argc, _TCHAR * argv[]) {
+int main() {
 
-	//Object of Helpers Class, this will contain multiple functions not required to be in this main
-	Helpers helpers; 
-	vector<int> vectSpamIDs; //vector will contain the the IDs of the emails that are identified as SPAM
+	
+
+	vector<string> vectSpamIDs; //vector will contain the the IDs of the emails that are identified as SPAM
 	vector<State> vector_statesReached; //vector to contain all transition functions / states reached, print at end of each body parse
 
 	string fileName = "messagefile.txt";
@@ -159,7 +256,7 @@ int _tmain(int argc, _TCHAR * argv[]) {
 	ifstream file;
 
 	//START
-	file.open(fileName);
+	file.open("messagefile.txt");
 
 	if (!file) {
 		cout << "File with name " + fileName + " does not exist!" << endl << endl;
@@ -169,32 +266,32 @@ int _tmain(int argc, _TCHAR * argv[]) {
 			//1. Read Line from file
 			getline(file, lineFromFile);
 
-			if(helpers.contains_isStartOfEmail(lineFromFile))
+			if(contains_isStartOfEmail(lineFromFile))
 			{			} // DO NOTHING
 			else{
 				//Then the line is not wrapped in <DOCID> xml tags, proceed with logic.
-				if(helpers.contains_MSG_ID(lineFromFile))
+				if(contains_MSG_ID(lineFromFile))
 				{
 					//There is a msgID, now retrieve the ID and push into vector
-					temp = helpers.get_MSG_ID(lineFromFile);
-					vectSpamIDs.push_back(stoi(temp));
+					temp = get_MSG_ID(lineFromFile);
+					vectSpamIDs.push_back(temp);
 				}//END IF
-				else if(helpers.contains_isNotSubject(lineFromFile))
+				else if(contains_isNotSubject(lineFromFile))
 				{}//DO NOTHING, IGNORE SUBJECT LINE
 				//Final Check - is line </DOC> closing XML tag
-				else if(helpers.contains_isEndOfEmail(lineFromFile))
+				else if(contains_isEndOfEmail(lineFromFile))
 				{
 
 					int a = 0;
 					//1. tempString is accumulated Body message, now remove quotes from it then pass into Finite Automaton
 					//Search the string and remove all double quotes if any
-					while(helpers.contains_quotes(tempString))
+					while(contains_quotes(tempString))
 					{
-						tempString = helpers.get_cleanString(tempString);
+						tempString = get_cleanString(tempString);
 					}
 					//2. If string passes FA, keep spamID inside vector, else pop it
 					cout<<endl<<"Performing Finite Automata..."<<endl;
-					helpers.printState(dfaState);
+					printState(dfaState);
 
 					//Pass character into Finite Automaton
 					for( a = 0; a < tempString.length(); a++)
@@ -224,10 +321,10 @@ int _tmain(int argc, _TCHAR * argv[]) {
 		file.close(); //close file
 	}
 	//DEBUG  - PRINT VECTORS
-	helpers.printVectIDs(vectSpamIDs);
+	printVectIDs(vectSpamIDs);
 
 	//END
-	system("pause"); //pause screen to show output
+	//system("pause"); //pause screen to show output
 	return 0;
 }
 void printStateTransition(enum State currentState, char c)
@@ -298,6 +395,7 @@ void FiniteAutomata(char  c)
 	}
 
 }
+
 
 //STATE BASED FUNCTIONS
 enum State start(char c) {
