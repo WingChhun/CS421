@@ -17,7 +17,7 @@ from it's contents, at the end of the program the contents of the vector are dis
 is a ID identifying a SPAM email
 
 - If want to change the file to be parsed, within the main, change filename to "<anyFileName within same directory"
-- NOTES, there is a 'Helpers.h' header file, this class is not required however it increases the modularity of the program as
+- NOTES, there is a 'h' header file, this class is not required however it increases the modularity of the program as
 - this main .cpp file is long and requires the enum States and State functions to be within it.
 -README.md will be included
 *
@@ -26,17 +26,16 @@ Program charroduction up here
 
 */
 //Header config
-#include "stdafx.h"
-#include < iostream > 
-#include < fstream > 
-#include < string > 
-#include < stack >
-#include < vector >
+//#include "stdafx.h"
+#include <iostream> 
+#include <fstream> 
+#include <string> 
+#include <vector>
 
 using namespace std; // allow ignore std:: prefix for output stream
 
 // include helper class with functions that dont involve handling state
-#include "Helpers.h";
+
 
 /*
 Enum state config
@@ -130,6 +129,21 @@ enum State winners(char c);
 //Main function prototypes
 void printStateTransition(enum State currentState, char c);
 void printLeftGrammar(vector<string> LeftGrammar);
+void printState(enum State currentState); //function for testing/debug, will print currentState
+	void printVectIDs(vector<string> vectSpamIDs); // function will print the IDs of the emails identified as being SPAM
+	void printFinalStates(); //function to print the Final states as numbers to the user
+
+	//Truthy/Falsy functions, to determine what line is being read in the email
+
+	bool contains_MSG_ID(string lineFromFile); // check if <DOCID> and 'msg' is present in the string, 
+	bool contains_isStartOfEmail(string lineFromFile); //search for <DOC>
+	bool contains_isNotSubject(string lineFromFile); //Check if 'Subject' is present, if so, return false to skip
+	bool contains_isEndOfEmail(string lineFromFile); //check if </DOC>, end of the email
+	bool contains_quotes(string lineFromFile); //check if string contains quotes, return false if doesnt, return true if does
+	//get MSGID Functions
+	string get_MSG_ID(string lineFromFile);
+	string get_cleanString(string lineFromFile); //returns a string without double quotes
+	//parse BODY functions
 //vector<string> LeftGrammar;
 //Finite Automata prototype
 void FiniteAutomata(char c); //accept a intacter
@@ -150,11 +164,11 @@ enum State dfaState = state_start;
 - If so, then build a substring that contains the ID,
 -Convert that substring into an integer and push into vector of SpamIDs
 */
-int _tmain(int argc, _TCHAR * argv[]) {
+int main() {
 
 	//Object of Helpers Class, this will contain multiple functions not required to be in this main
-	Helpers helpers; 
-	vector<int> vectSpamIDs; //vector will contain the the IDs of the emails that are identified as SPAM
+	//Helpers helpers; 
+	vector<string> vectSpamIDs; //vector will contain the the IDs of the emails that are identified as SPAM
 	vector<State> vector_statesReached; //vector to contain all transition functions / states reached, print at end of each body parse
 
 	string fileName = "messagefile.txt";
@@ -164,7 +178,7 @@ int _tmain(int argc, _TCHAR * argv[]) {
 	ifstream file;
 
 	//START
-	file.open(fileName);
+	file.open("messagefile.txt");
 
 	if (!file) {
 		cout << "File with name " + fileName + " does not exist!" << endl << endl;
@@ -174,28 +188,28 @@ int _tmain(int argc, _TCHAR * argv[]) {
 			//1. Read Line from file
 			getline(file, lineFromFile);
 
-			if(helpers.contains_isStartOfEmail(lineFromFile))
+			if(contains_isStartOfEmail(lineFromFile))
 			{			} // DO NOTHING
 			else{
 				//Then the line is not wrapped in <DOCID> xml tags, proceed with logic.
-				if(helpers.contains_MSG_ID(lineFromFile))
+				if(contains_MSG_ID(lineFromFile))
 				{
 					//There is a msgID, now retrieve the ID and push into vector
-					temp = helpers.get_MSG_ID(lineFromFile);
-					vectSpamIDs.push_back(stoi(temp));
+					temp = get_MSG_ID(lineFromFile);
+					vectSpamIDs.push_back(temp);
 				}//END IF
-				else if(helpers.contains_isNotSubject(lineFromFile))
+				else if(contains_isNotSubject(lineFromFile))
 				{}//DO NOTHING, IGNORE SUBJECT LINE
 				//Final Check - is line </DOC> closing XML tag
-				else if(helpers.contains_isEndOfEmail(lineFromFile))
+				else if(contains_isEndOfEmail(lineFromFile))
 				{
 
 					int a = 0;
 					//1. tempString is accumulated Body message, now remove quotes from it then pass into Finite Automaton
 					//Search the string and remove all double quotes if any
-					while(helpers.contains_quotes(tempString))
+					while(contains_quotes(tempString))
 					{
-						tempString = helpers.get_cleanString(tempString);
+						tempString = get_cleanString(tempString);
 					}
 					//2. If string passes FA, keep spamID inside vector, else pop it
 					cout<<endl<<endl<<"Performing Finite Automata..."<<endl;
@@ -230,10 +244,10 @@ int _tmain(int argc, _TCHAR * argv[]) {
 		file.close(); //close file
 	}
 	//DEBUG  - PRINT VECTORS
-	helpers.printVectIDs(vectSpamIDs);
+	printVectIDs(vectSpamIDs);
 	//printLeftGrammar();
 	//END
-	system("pause"); //pause screen to show output
+	//system("pause"); //pause screen to show output
 	return 0;
 }
 void printStateTransition(enum State currentState, char c)
@@ -246,7 +260,7 @@ void FiniteAutomata(char  c)
 {
 
 	if(dfaState == state_start){dfaState == start(c);}
-	else if((c == NULL || c == '\0' || c == ' ') && (dfaState == state_winner || dfaState == state_winnings || 
+	else if((c == '\0' || c == ' ') && (dfaState == state_winner || dfaState == state_winnings || 
 		dfaState == state_win || dfaState == state_free_trials || dfaState == state_free_software || 
 		dfaState == state_free_access || dfaState == state_free_vacation))
 	{dfaState = final(c);} 
@@ -301,10 +315,10 @@ void FiniteAutomata(char  c)
 	//WINNER(S) STATES
 	else if (dfaState == state_winne){dfaState = winne(c);}
 	else if (dfaState == state_winner){
-		if(c == NULL){final(c);}
-		else if (c != NULL){dfaState = winner(c);}
+	
+	 if (c){dfaState = winner(c);}
+	 else{final(c);}
 	}
-
 	else if (dfaState == state_winners){dfaState = final(c);} 
 	//FINAL CATCH ANY MISSED ERRORS
 
@@ -320,6 +334,87 @@ void printLeftGrammar()
 	
 
 }
+//PRINT FUNCTIONS
+void printState(enum State currentState)
+{
+	cout <<"Showing State : " << currentState << endl;
+}
+void printVectIDs(vector<string> vect_spamIDs)
+{
+	cout<<endl<<endl<<"Printing IDs of Emails identified as SPAM"<<endl;
+	for(int i = 0; i < vect_spamIDs.size(); i++)
+	{
+		cout<<"spamID = " <<vect_spamIDs[i] <<endl;
+	}
+}
+void printFinalStates()
+{
+	cout<<"Called printFinalStates from Helper Class" <<endl;
+}
+//FILE PARSING FUNCTIONS
+bool contains_MSG_ID(string lineFromFile)
+{
+	string srch_MSGID = "msg",srch_DOCID = "</DOCID>"; 
+	int temp = -1,temp2=-1;
+	temp = lineFromFile.find("msg"); //search for starting index of 'msg'
+	temp2 = lineFromFile.find("</DOCID>"); //search for DOCID string
+	if((temp != -1) && (temp2 != -1)){return true;}
+	return false;
+}
+
+bool contains_isNotSubject(string lineFromFile)
+{
+	//Function will check if this line is the Subject:
+	int temp = -1; 
+	temp = lineFromFile.find("Subject:"); //search for 'Subject'
+	if(temp != -1){return true;} //false, there is no subject stirng
+	return false; 
+}
+bool contains_isEndOfEmail(string lineFromFile)
+{
+	//Function will check if this line is the end of the Email
+	int temp = -1; 
+	temp = lineFromFile.find("</DOC>"); 
+	if(temp != -1){return true;} 
+	return false; 
+}
+bool contains_isStartOfEmail(string lineFromFile)
+{
+	//Function checks if starting line
+	int temp = -1;
+	temp = lineFromFile.find("<DOC>");
+	if(temp!= -1 ){return true;}
+	return false;
+}
+bool contains_quotes(string lineFromFile)
+{
+	int temp = -1; 
+	temp = lineFromFile.find('"');
+	if(temp == -1 ) {return false;}
+	return true;
+}
+//GET FUNCTIONS
+string get_MSG_ID(string lineFromFile)
+{
+	//return a string containing the msgID 
+	string temp = ""; 
+	int messageID = -1, docID = -1;
+	messageID = lineFromFile.find("msg"); //search for starting index of 'msg'
+	docID = lineFromFile.find("</DOCID>"); //search for DOCID string
+	temp = lineFromFile.substr(messageID+3, docID-1);
+	return temp; //temp is the messageID as a string
+}
+string get_cleanString(string strCleanse)
+{
+int position = -1;
+do
+{
+	position = strCleanse.find('"');
+	strCleanse.erase(position,1); //erase single character
+}while(strCleanse.find('"') != -1);
+	return strCleanse ;
+}
+
 //STATE BASED FUNCTIONS
 enum State start(char c) {
 
@@ -711,10 +806,10 @@ enum State winner(char c)
 	printStateTransition(dfaState,c);
 	//100% this is accepted
 
-	if (c =='s' || c == '\n' || c == '\0' || c == ' ' || c == NULL ) {
+	if (c =='s' || c == '\n' || c == '\0' || c == ' ' ) {
 		//cout <<endl<<"q"<<"String 'winners' accepted"  << ", ";
 		dfaState = state_final;}
-	else if (!(c =='s' || c == NULL)){dfaState = state_start;}
+	else if (!(c =='s')){dfaState = state_start;}
 	else{dfaState = state_final;}
 	cout <<"q"<<state_final << ", ";
 
