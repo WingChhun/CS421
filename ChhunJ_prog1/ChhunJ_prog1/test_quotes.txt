@@ -1,0 +1,19 @@
+<DOC>
+<DOCID> msg2 </DOCID>
+Subject: you can win ! ! !
+
+free vacation
+</DOC>
+
+<DOC>
+<DOCID> msg2 </DOCID>
+Subject: you can win ! ! !
+
+" free vacation "
+</DOC>
+<DOC>
+<DOCID> msg2 </DOCID>
+Subject: you can win ! ! !
+
+"free vacation"
+</DOC>

@@ -20,11 +20,15 @@ void Helpers::printState(enum State currentState)
 }
 void Helpers::printVectIDs(vector<int> vect_spamIDs)
 {
-	cout<<"Printing vector IDS!";
+	cout<<endl<<endl<<"Printing IDs of Emails identified as SPAM"<<endl;
 	for(int i = 0; i < vect_spamIDs.size(); i++)
 	{
 		cout<<"spamID = " <<vect_spamIDs[i] <<endl;
 	}
+}
+void Helpers::printFinalStates()
+{
+	cout<<"Called printFinalStates from Helper Class" <<endl;
 }
 //FILE PARSING FUNCTIONS
 bool Helpers::contains_MSG_ID(string lineFromFile)
@@ -36,6 +40,39 @@ bool Helpers::contains_MSG_ID(string lineFromFile)
 	if((temp != -1) && (temp2 != -1)){return true;}
 	return false;
 }
+
+bool Helpers::contains_isNotSubject(string lineFromFile)
+{
+	//Function will check if this line is the Subject:
+	int temp = -1; 
+	temp = lineFromFile.find("Subject:"); //search for 'Subject'
+	if(temp != -1){return true;} //false, there is no subject stirng
+	return false; 
+}
+bool Helpers::contains_isEndOfEmail(string lineFromFile)
+{
+	//Function will check if this line is the end of the Email
+	int temp = -1; 
+	temp = lineFromFile.find("</DOC>"); 
+	if(temp != -1){return true;} 
+	return false; 
+}
+bool Helpers::contains_isStartOfEmail(string lineFromFile)
+{
+	//Function checks if starting line
+	int temp = -1;
+	temp = lineFromFile.find("<DOC>");
+	if(temp!= -1 ){return true;}
+	return false;
+}
+bool Helpers::contains_quotes(string lineFromFile)
+{
+	int temp = -1; 
+	temp = lineFromFile.find('"');
+	if(temp == -1 ) {return false;}
+	return true;
+}
+//GET FUNCTIONS
 string Helpers::get_MSG_ID(string lineFromFile)
 {
 	//return a string containing the msgID 
@@ -45,4 +82,14 @@ string Helpers::get_MSG_ID(string lineFromFile)
 	docID = lineFromFile.find("</DOCID>"); //search for DOCID string
 	temp = lineFromFile.substr(messageID+3, docID-1);
 	return temp; //temp is the messageID as a string
+}
+string Helpers::get_cleanString(string strCleanse)
+{
+int position = -1;
+do
+{
+	position = strCleanse.find('"');
+	strCleanse.erase(position,1); //erase single character
+}while(strCleanse.find('"') != -1);
+	return strCleanse ;
 }
