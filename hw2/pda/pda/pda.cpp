@@ -43,7 +43,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	if(!File){cout<<"File does not exist!"<<endl;}
 	else
 	{
-		cout <<"File with name of " << fileName << " exists!"<<endl<<"Parsing file... " << endl<<endl;
+
 		while(!File.eof())//While not end of file
 		{
 
@@ -58,7 +58,12 @@ int _tmain(int argc, _TCHAR* argv[])
 			}
 			else
 			{
-				startPDA(currentState, lineFromFile);
+				//startPDA returns true or false depending of string is accepted by language
+				if(startPDA(currentState, lineFromFile))
+				{
+					Accepted(lineFromFile);
+				}
+				else{notAccepted(lineFromFile);}
 			}
 
 
@@ -85,12 +90,11 @@ bool startPDA(int currentState, string lineFromFile)
 	int i = 0;
 	char temp;
 	PDA.push('z');
-	cout <<"Current Line = " << lineFromFile << " ... "<<endl;
 
 	if(lineFromFile.empty() && PDA.top() == 'z')
 	{
 		currentState = 0;
-		cout<<"Line is empty"<<endl;
+		notAccepted(lineFromFile);
 	}
 	else
 	{
@@ -126,8 +130,12 @@ bool startPDA(int currentState, string lineFromFile)
 				break;
 
 			case ')':
+				if(PDA.top() == '[' || PDA.top() == 'z')
+				{
 
-				if(currentState == 0 && (PDA.top() ='('))
+					return false;
+				}
+				else  if(currentState == 0 && (PDA.top() ='('))
 				{
 					PDA.pop(); //pop top of stack b/c matching parentheses
 					currentState = 1; //change state
@@ -137,19 +145,12 @@ bool startPDA(int currentState, string lineFromFile)
 					PDA.pop(); //pop top of stack b/c matching parentheses
 					currentState = 1; //change state
 				}
-				else if(PDA.top() == '[' || PDA.top() == 'z')
-				{
-					cout <<"Fail"<<endl;
-					notAccepted(lineFromFile);
-					return false;
-				}
+
 				break;
 
 			case ']':
 				if(PDA.top() == '(' || PDA.top() == 'z')
 				{
-					cout <<"Fail"<<endl;
-					notAccepted(lineFromFile);
 					return false;
 				}
 				else if((currentState == 0 || currentState ==1)  && (PDA.top() ='['))
@@ -171,21 +172,12 @@ bool startPDA(int currentState, string lineFromFile)
 		}// END LOOP
 	}//END ELSE
 
-	//DEBUG - PEEK TOP
-	cout<<"Top of the stack after PDA is " << PDA.top() <<endl;
-	showStack(PDA);
 	//If top of stack is 'z', go to final state
 	if(PDA.top() == 'z')
 	{
-		Accepted(lineFromFile);
-
 		currentState = 2; //go to final
 	}
-	else
-	{
-		notAccepted(lineFromFile);
 
-	}
 	if(currentState = 2){return true;} //state 2 is final
 	return false;
 }
