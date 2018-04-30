@@ -19,19 +19,24 @@ in the language of balanced parentheses.
 
 using namespace std;
 //function prototypes
-bool startPDA(stack<char> &PDA, int &currentState, string lineFromFile);
-void emptyStackandReset(stack<char> &PDA, int &currentState, string &lineFromFile);
+bool startPDA(int currentState, string lineFromFile);
+void emptyStack(stack<char> &PDA);
+void notAccepted(string lineFromFile);
+void Accepted(string lineFromFile);
+void showStack(stack<char> PDA);
+
+//MAIN
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	//Initialize variables
-	stack<char> PDA;
+
 	int currentState = 0;  //variable for state
 	ifstream File;
 	string fileName = "input.txt";
 	string lineFromFile =""; 
 
 
-	PDA.push('z'); //push z into the stack, will be used to determine final state
 	//open file
 	File.open(fileName); 
 
@@ -41,24 +46,26 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout <<"File with name of " << fileName << " exists!"<<endl<<"Parsing file... " << endl<<endl;
 		while(!File.eof())//While not end of file
 		{
+
+			//Reset
+			currentState = 0;
+			lineFromFile = "";
 			//get whole line from file, and pass line, stack, and currentState into startPDA function
 			getline(File, lineFromFile);
-			startPDA(PDA, currentState, lineFromFile);
-
-			cout <<"Showing top of PDA " << PDA.top()<<endl;
-
-
-			//END OF PDA for string 
-			//emppty Stack and reset variables
-			cout<<"Debug - CLEARING STACK " << endl;
-			emptyStackandReset(PDA, currentState, lineFromFile); 
-			cout <<"Debug - SHOWING TOP OF STACK, (SHOULD BE 'z')" << endl;
-			cout<<"Top = " << PDA.top() << " Current State = " << currentState <<endl<<endl;
-
-		}
+			if(lineFromFile.empty())
+			{
+				notAccepted(lineFromFile);
+			}
+			else
+			{
+				startPDA(currentState, lineFromFile);
+			}
 
 
-	}
+		}//end while
+
+
+	}//end else
 	File.close(); //close file
 	//open file
 
@@ -71,32 +78,155 @@ int _tmain(int argc, _TCHAR* argv[])
 
 /*******END MAIN ***********/
 
-bool startPDA(stack<char> &PDA, int &currentState, string lineFromFile)
+bool startPDA(int currentState, string lineFromFile)
 {
-	cout<<"Testing for line = " << lineFromFile<< " ... " <<endl;
-	cout<<"Pushing Stuff into stack and changing state"<<endl<<endl;
-	PDA.push('A');
-	PDA.push('B');
-	PDA.push('C');
-	currentState = 1;
 
-	//return true if string is accepted by the language
-	if(currentState = 3){return true;} //state 3 is final
-	//return false if string does not reach final state
+	stack<char> PDA;
+	int i = 0;
+	char temp;
+	PDA.push('z');
+	cout <<"Current Line = " << lineFromFile << " ... "<<endl;
+
+	if(lineFromFile.empty() && PDA.top() == 'z')
+	{
+		currentState = 0;
+		cout<<"Line is empty"<<endl;
+	}
+	else
+	{
+		//Loop through each character of the lineFromFile, perform an action
+		for(i = 0; i < lineFromFile.length(); i++)
+		{
+			temp = lineFromFile[i]; 
+			//SWITCH: Perform action depending on what character is read
+			switch(temp)
+			{
+			case '(':
+				if(currentState == 0)
+				{
+					PDA.push(temp);
+				}
+				else if(currentState == 1)
+				{
+					//Push and change state back to 0
+					PDA.push(temp);
+					currentState = 0;
+				}
+				break;
+			case '[':
+				if(currentState == 0)
+				{
+					PDA.push(temp);
+				}
+				else if(currentState == 1)
+				{ //push and change state back to 0
+					PDA.push(temp);
+					currentState = 0; 
+				}
+				break;
+
+			case ')':
+
+				if(currentState == 0 && (PDA.top() ='('))
+				{
+					PDA.pop(); //pop top of stack b/c matching parentheses
+					currentState = 1; //change state
+				}
+				else if(currentState == 1 && (PDA.top() ='('))
+				{
+					PDA.pop(); //pop top of stack b/c matching parentheses
+					currentState = 1; //change state
+				}
+				else if(PDA.top() == '[' || PDA.top() == 'z')
+				{
+					cout <<"Fail"<<endl;
+					notAccepted(lineFromFile);
+					return false;
+				}
+				break;
+
+			case ']':
+				if(PDA.top() == '(' || PDA.top() == 'z')
+				{
+					cout <<"Fail"<<endl;
+					notAccepted(lineFromFile);
+					return false;
+				}
+				else if((currentState == 0 || currentState ==1)  && (PDA.top() ='['))
+				{
+					PDA.pop(); //pop top of stack b/c matching parentheses
+					currentState = 1; //change state
+				}
+				else if(currentState == 1 && (PDA.top() ='['))
+				{
+					PDA.pop(); //pop top of stack b/c matching parentheses
+					currentState = 1; //change state
+				}
+
+				break;
+			default:
+				break;
+			}//END SWITCH
+
+		}// END LOOP
+	}//END ELSE
+
+	//DEBUG - PEEK TOP
+	cout<<"Top of the stack after PDA is " << PDA.top() <<endl;
+	showStack(PDA);
+	//If top of stack is 'z', go to final state
+	if(PDA.top() == 'z')
+	{
+		Accepted(lineFromFile);
+
+		currentState = 2; //go to final
+	}
+	else
+	{
+		notAccepted(lineFromFile);
+
+	}
+	if(currentState = 2){return true;} //state 2 is final
 	return false;
 }
 
 /*
 Function to empty the stack, occurs at end of every PDA for each line of the file
 */
-void emptyStackandReset(stack<char> &PDA, int &currentState, string &lineFromFile)
+void emptyStack(stack<char> &PDA)
 {
-	//reset state and line from file
-	currentState = 0;
-	lineFromFile = "";
-	//Clear stack, pop until empty
 	while(!PDA.empty())
-	{PDA.pop();}
-	//Push 'z' into stack
-	PDA.push('z');
+	{
+		PDA.pop();
+	}
+}
+
+void Accepted(string lineFromFile)
+{
+	cout <<"Parentheses are balanced for " << lineFromFile << endl<<endl;
+}
+
+void notAccepted(string lineFromFile)
+{
+	if(lineFromFile.empty())
+	{
+		lineFromFile = "Empty String";
+	}
+
+	cout <<"Parentheses are not  balanced for " << lineFromFile << endl<<endl;
+
+}
+
+void showStack(stack<char> PDA)
+{
+
+	int i = 0;
+
+	cout<<"Size of PDA is " << PDA.size() << " Now showing stack contents " << endl;
+	while(!PDA.empty())
+	{
+
+		cout<<PDA.top() <<endl;
+		PDA.pop();
+	}
 }
