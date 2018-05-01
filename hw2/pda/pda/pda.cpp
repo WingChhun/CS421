@@ -10,7 +10,7 @@ in the language of balanced parentheses.
 - This program makes use of the cpp 'stack' class and involves using functions such as push, pop, and top to implement the pushdown automaton.
 */
 
-#include "stdafx.h"
+//#include "stdafx.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -27,7 +27,7 @@ void showStack(stack<char> PDA);
 
 //MAIN
 
-int _tmain(int argc, _TCHAR* argv[])
+int main()
 {
 	//Initialize variables
 
@@ -38,7 +38,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 
 	//open file
-	File.open(fileName); 
+	File.open("input.txt"); 
 
 	if(!File){cout<<"File does not exist!"<<endl;}
 	else
@@ -77,7 +77,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 
 	//END MAIN
-	system("pause"); //for vscode
+//	system("pause"); //for vscode
 	return 0;
 }
 
